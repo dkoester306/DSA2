@@ -30,7 +30,7 @@ void MyMesh::GenerateCircle(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 		if (yPos <0 && yPos>-0.0001f)
 			yPos = 0.0f;
 
-		allPoints.push_back(vector3(xPos, yPos, 0.0f));
+		allPoints.push_back(vector3(xPos, 0.0f, yPos));
 	
 		angle += POLY_ANGLE;
 	}

@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "A01_TemplateQueue", "A01_Te
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "E04 - Circle Creation", "E04 - Cube Creation\E04 - Cube Creation.vcxproj", "{531771BB-7F7E-47FF-A148-2AC8F76235A0}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "A02 - 3D Primitives", "A02 - 3D Primitives\A02 - 3D Primitives.vcxproj", "{7EDBEED8-75ED-48EE-9F13-5D4A895E8F1B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -35,6 +37,12 @@ Global
 		{531771BB-7F7E-47FF-A148-2AC8F76235A0}.Release|x64.ActiveCfg = Release|Win32
 		{531771BB-7F7E-47FF-A148-2AC8F76235A0}.Release|x86.ActiveCfg = Release|Win32
 		{531771BB-7F7E-47FF-A148-2AC8F76235A0}.Release|x86.Build.0 = Release|Win32
+		{7EDBEED8-75ED-48EE-9F13-5D4A895E8F1B}.Debug|x64.ActiveCfg = Debug|Win32
+		{7EDBEED8-75ED-48EE-9F13-5D4A895E8F1B}.Debug|x86.ActiveCfg = Debug|Win32
+		{7EDBEED8-75ED-48EE-9F13-5D4A895E8F1B}.Debug|x86.Build.0 = Debug|Win32
+		{7EDBEED8-75ED-48EE-9F13-5D4A895E8F1B}.Release|x64.ActiveCfg = Release|Win32
+		{7EDBEED8-75ED-48EE-9F13-5D4A895E8F1B}.Release|x86.ActiveCfg = Release|Win32
+		{7EDBEED8-75ED-48EE-9F13-5D4A895E8F1B}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
