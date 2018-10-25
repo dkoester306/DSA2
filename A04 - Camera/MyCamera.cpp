@@ -103,6 +103,9 @@ void Simplex::MyCamera::ResetCamera(void)
 	m_v3Position = vector3(0.0f, 0.0f, 10.0f); //Where my camera is located
 	m_v3Target = vector3(0.0f, 0.0f, 0.0f); //What I'm looking at
 	m_v3Above = vector3(0.0f, 1.0f, 0.0f); //What is above the camera
+	m_v3Forward = vector3(0.0f, 0.0f, -1.0f);
+	m_v3Upward = vector3(0.0f, 1.0f, 0.0f);
+	m_v3Right = vector3(1.0f, 0.0f, 0.0f);
 
 	m_bPerspective = true; //perspective view? False is Orthographic
 
@@ -153,15 +156,39 @@ void Simplex::MyCamera::CalculateProjectionMatrix(void)
 void MyCamera::MoveForward(float a_fDistance)
 {
 	//The following is just an example and does not take in account the forward vector (AKA view vector)
-	m_v3Position += vector3(0.0f, 0.0f,-a_fDistance);
-	m_v3Target += vector3(0.0f, 0.0f, -a_fDistance);
-	m_v3Above += vector3(0.0f, 0.0f, -a_fDistance);
+	// glm::normalize(m)v3Forward)
+	m_v3Position += glm::normalize(m_v3Forward)*a_fDistance;
+	m_v3Target += glm::normalize(m_v3Forward)*a_fDistance;
+	m_v3Above += glm::normalize(m_v3Forward)*a_fDistance;
 }
 
 void MyCamera::MoveVertical(float a_fDistance){}//Needs to be defined
 void MyCamera::MoveSideways(float a_fDistance)//Needs to be defined
 {
-	m_v3Position += (vector3(-a_fDistance, 0.0f, 0.0f));
-	m_v3Target += (vector3(-a_fDistance, 0.0f, 0.0f));
-	m_v3Above += (vector3(-a_fDistance, 0.0f, 0.0f));
+	vector3 normalize = glm::normalize(m_v3Right - m_v3Position);
+
+	m_v3Position += normalize*a_fDistance;
+	m_v3Target += normalize *a_fDistance;
+	m_v3Above += normalize *a_fDistance;
 }
+
+void MyCamera::ChangePitch(float pitch)
+{
+	quaternion pQuat = glm::angleAxis(glm::radians(3 * pitch),glm::cross(m_v3Above- m_v3Position,m_v3Forward));
+	m_v3Right = (pQuat * (m_v3Right - m_v3Position)) + m_v3Position;
+	m_v3Forward = (pQuat * m_v3Forward);
+	m_v3Target = (pQuat * (m_v3Target - m_v3Position)) + m_v3Position;
+	m_v3Upward = (pQuat * m_v3Upward);
+}
+
+void MyCamera::ChangeYaw(float yaw)
+{
+	// find a quaternion that rotate some amount about the up axis
+	quaternion pQuat = glm::angleAxis(glm::radians(3 * -yaw), m_v3Position - m_v3Above);
+	m_v3Right = (pQuat * (m_v3Right - m_v3Position)) + m_v3Position;
+	m_v3Forward = (pQuat * m_v3Forward);
+	m_v3Target = (pQuat * (m_v3Target - m_v3Position)) + m_v3Position;
+	m_v3Upward = (pQuat * m_v3Upward);
+}
+
+
