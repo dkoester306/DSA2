@@ -86,7 +86,7 @@ void MyRigidBody::SetModelMatrix(matrix4 a_m4ModelMatrix)
 	m_m4ToWorld = a_m4ModelMatrix;
 
 	//Calculate the 8 corners of the cube
-	vector3 v3Corner[8];
+	//vector3 v3Corner[8];
 	//Back square
 	v3Corner[0] = m_v3MinL;
 	v3Corner[1] = vector3(m_v3MaxL.x, m_v3MinL.y, m_v3MinL.z);
@@ -276,6 +276,7 @@ void MyRigidBody::AddToRenderList(void)
 
 uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 {
+	
 	/*
 	Your code goes here instead of this comment;
 
@@ -286,6 +287,8 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	Simplex that might help you [eSATResults] feel free to use it.
 	(eSATResults::SAT_NONE has a value of 0)
 	*/
+
+	
 	std::vector<vector3> first;
 	first.push_back(this->m_m4ToWorld*vector4(1, 0, 0, 0));
 	first.push_back(this->m_m4ToWorld*vector4(0, 1, 0, 0));
@@ -304,8 +307,8 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	// find the rotation matrix for b in a's coordinates
 	for (int i = 0; i < 3; i++)
 	{
-		for (int j = 0; j < 3; j++)
-			R[i][j] = glm::dot(first[i], second[j]);
+	for (int j = 0; j < 3; j++)
+	R[i][j] = glm::dot(first[i], second[j]);
 	}
 
 	// get the translation vector
@@ -317,83 +320,131 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	// compute comment expressions
 	for (int i = 0; i < 3; i++)
 	{
-		for (int j = 0; j < 3; j++)
-			AbsR[i][j] = glm::abs(R[i][j]) + DBL_EPSILON;
+	for (int j = 0; j < 3; j++)
+	AbsR[i][j] = glm::abs(R[i][j]) + DBL_EPSILON;
 	}
-	
+
 	// axis L=A0, L=A1, L=A2
 	for (int i = 0; i < 3; i++)
 	{
-		rFirst = this->GetHalfWidth()[i];
-		rSecond = a_pOther->GetHalfWidth()[0]*AbsR[i][0]+ a_pOther->GetHalfWidth()[1]*AbsR[i][1]+ a_pOther->GetHalfWidth()[2] * AbsR[i][2];
-		if (glm::abs(t[i]) > rFirst + rSecond)
-			return 0;
+	rFirst = this->GetHalfWidth()[i];
+	rSecond = a_pOther->GetHalfWidth()[0]*AbsR[i][0]+ a_pOther->GetHalfWidth()[1]*AbsR[i][1]+ a_pOther->GetHalfWidth()[2] * AbsR[i][2];
+	if (glm::abs(t[i]) > rFirst + rSecond)
+	return 1;
 	}
 
 	// axis L=B0, L=B1, L=B2
 	for (int i = 0; i < 3; i++)
 	{
-		rFirst = this->GetHalfWidth()[0] * AbsR[0][i] + this->GetHalfWidth()[1] * AbsR[1][i] + this->GetHalfWidth()[2] * AbsR[2][i];
-		rSecond = a_pOther->GetHalfWidth()[i];
-		if (glm::abs(t[0]*R[0][i]+t[1]*R[1][i]+t[2] * R[2][i]) > rFirst + rSecond)
-			return 0;
+	rFirst = this->GetHalfWidth()[0] * AbsR[0][i] + this->GetHalfWidth()[1] * AbsR[1][i] + this->GetHalfWidth()[2] * AbsR[2][i];
+	rSecond = a_pOther->GetHalfWidth()[i];
+	if (glm::abs(t[0]*R[0][i]+t[1]*R[1][i]+t[2] * R[2][i]) > rFirst + rSecond)
+	return 1;
 	}
 
 	// axis L=A0 x B0
 	rFirst = this->GetHalfWidth()[1] * AbsR[2][0] + this->GetHalfWidth()[2] * AbsR[1][0];
 	rSecond = a_pOther->GetHalfWidth()[1] * AbsR[0][2] + a_pOther->GetHalfWidth()[2] * AbsR[0][1];
 	if (glm::abs(t[2] * R[1][0] - t[1] * R[2][0]) > rFirst + rSecond)
-		return 0;
+	return 1;
 
 	// axis L=A0 x B1
 	rFirst = this->GetHalfWidth()[1] * AbsR[2][1] + this->GetHalfWidth()[2] * AbsR[1][1];
 	rSecond = a_pOther->GetHalfWidth()[0] * AbsR[0][2] + a_pOther->GetHalfWidth()[2] * AbsR[0][0];
 	if (glm::abs(t[2] * R[1][1] - t[1] * R[2][1]) > rFirst + rSecond)
-		return 0;
+	return 1;
 
 	// axis L=A0 x B2
 	rFirst = this->GetHalfWidth()[1] * AbsR[2][2] + this->GetHalfWidth()[2] * AbsR[1][2];
 	rSecond = a_pOther->GetHalfWidth()[0] * AbsR[0][1] + a_pOther->GetHalfWidth()[1] * AbsR[0][0];
 	if (glm::abs(t[2] * R[1][2] - t[1] * R[2][2]) > rFirst + rSecond)
-		return 0;
+	return 1;
 
 	// axis L=A1 x B0
 	rFirst = this->GetHalfWidth()[0] * AbsR[2][0] + this->GetHalfWidth()[2] * AbsR[0][0];
 	rSecond = a_pOther->GetHalfWidth()[1] * AbsR[1][2] + a_pOther->GetHalfWidth()[2] * AbsR[1][1];
 	if (glm::abs(t[0] * R[2][0] - t[2] * R[0][0]) > rFirst + rSecond)
-		return 0;
+	return 1;
 
 	// axis L=A1 x B1
 	rFirst = this->GetHalfWidth()[0] * AbsR[2][1] + this->GetHalfWidth()[2] * AbsR[0][1];
 	rSecond = a_pOther->GetHalfWidth()[0] * AbsR[1][2] + a_pOther->GetHalfWidth()[2] * AbsR[1][0];
 	if (glm::abs(t[0] * R[2][1] - t[2] * R[0][1]) > rFirst + rSecond)
-		return 0;
+	return 1;
 
 	// axis L=A1 x B2
 	rFirst = this->GetHalfWidth()[0] * AbsR[2][2] + this->GetHalfWidth()[2] * AbsR[0][2];
 	rSecond = a_pOther->GetHalfWidth()[0] * AbsR[1][1] + a_pOther->GetHalfWidth()[1] * AbsR[1][0];
 	if (glm::abs(t[0] * R[2][2] - t[2] * R[0][2]) > rFirst + rSecond)
-		return 0;
+	return 1;
 
 	// axis L=A2 x B0
 	rFirst = this->GetHalfWidth()[0] * AbsR[1][0] + this->GetHalfWidth()[1] * AbsR[0][0];
 	rSecond = a_pOther->GetHalfWidth()[1] * AbsR[2][2] + a_pOther->GetHalfWidth()[2] * AbsR[2][1];
 	if (glm::abs(t[1] * R[0][0] - t[0] * R[1][0]) > rFirst + rSecond)
-		return 0;
+	return 1;
 
 	// axis L=A2 x B1
 	rFirst = this->GetHalfWidth()[0] * AbsR[1][1] + this->GetHalfWidth()[1] * AbsR[0][1];
 	rSecond = a_pOther->GetHalfWidth()[0] * AbsR[2][2] + a_pOther->GetHalfWidth()[2] * AbsR[2][0];
 	if (glm::abs(t[1] * R[0][1] - t[0] * R[1][1]) > rFirst + rSecond)
-		return 0;
+	return 1;
 
 	// axis L=A2 x B2
 	rFirst = this->GetHalfWidth()[0] * AbsR[1][2] + this->GetHalfWidth()[1] * AbsR[0][2];
 	rSecond = a_pOther->GetHalfWidth()[0] * AbsR[2][1] + a_pOther->GetHalfWidth()[1] * AbsR[2][0];
-	if (glm::abs(t[1] * R[0][2] - t[0] * R[1][]) > rFirst + rSecond)
-		return 0;
-	
-
-	// return 1 if no collision found
+	if (glm::abs(t[1] * R[0][2] - t[0] * R[1][2]) > rFirst + rSecond)
 	return 1;
+
+
+
+	// return if no collision is found
+	return eSATResults::SAT_NONE;
+
+
+	
+}
+
+// return false if no collision
+bool Simplex::MyRigidBody::CheckCollision(vector3 axis, vector3 thisCorners[], vector3 otherCorners[])
+{
+	float min = 10000;
+	float max = -10000;
+	float min2 = 10000;
+	float max2 = -10000;
+
+	for (int i = 0; i < 8; i++)
+	{
+		// get the dot product of all the points in the array
+		float holder = glm::dot(axis, thisCorners[i]);
+
+		if (holder <= min)
+		{
+			min = holder;
+		}
+
+		if (holder >= max)
+		{
+			max = holder;
+		}
+
+		float holder2 = glm::dot(axis, otherCorners[i]);
+
+		if (holder2 <= min2)
+		{
+			min2 = holder2;
+		}
+
+		if (holder2 >= max2)
+		{
+			max2 = holder2;
+		}
+	}
+	if (min >= max2 || min2 >= max)
+	{
+		// not colliding
+		return false;
+	}
+
+	return true;
 }

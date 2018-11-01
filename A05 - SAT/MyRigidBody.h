@@ -34,6 +34,8 @@ class MyRigidBody
 	vector3 m_v3HalfWidth = ZERO_V3; //half the size of the Oriented Bounding Box
 	vector3 m_v3ARBBSize = ZERO_V3;// size of the Axis (Re)Alligned Bounding Box
 
+	vector3 v3Corner[8];
+
 	matrix4 m_m4ToWorld = IDENTITY_M4; //Matrix that will take us from local to world coordinate
 
 	std::set<MyRigidBody*> m_CollidingRBSet; //set of rigid bodies this one is colliding with
@@ -248,6 +250,8 @@ private:
 	OUTPUT: 0 for colliding, other = first axis that succeeds test
 	*/
 	uint SAT(MyRigidBody* const a_pOther);
+
+	bool CheckCollision(vector3 axis, vector3 thisCorners[], vector3 otherCorners[]);
 };//class
 
 } //namespace Simplex
