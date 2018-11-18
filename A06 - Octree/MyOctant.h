@@ -1,17 +1,8 @@
-/*----------------------------------------------
-Programmer: Alberto Bobadilla (labigm@gmail.com)
-Date: 2017/07
-----------------------------------------------*/
-#ifndef __OCTANTCLASS_H_
-#define __OCTANTCLASS_H_
+#include "MyEntityManager.h"
 
-#include "Simplex\Physics\EntityManager.h"
-
-namespace Simplex
-{
-
+using namespace Simplex;
 //System Class
-class SimplexDLL Octant
+class MyOctant
 {
 	static uint m_uOctantCount; //will store the number of octants instantiated
 	static uint m_uMaxLevel;//will store the maximum level an octant can go to
@@ -24,30 +15,32 @@ class SimplexDLL Octant
 	vector3 m_vSize = vector3(0.0f); //Size of the octant
 
 	MeshManager* m_pMeshMngr = nullptr;//Mesh Manager singleton
-	EntityManager* m_pEntityMngr = nullptr; //Entity Manager Singleton
+	MyEntityManager* m_pEntityMngr = nullptr; //Entity Manager Singleton
 
 	vector3 m_v3Center = vector3(0.0f); //Will store the center point of the octant
 	vector3 m_v3Min = vector3(0.0f); //Will store the minimum vector of the octant
 	vector3 m_v3Max = vector3(0.0f); //Will store the maximum vector of the octant
-	
-	Octant* m_pParent = nullptr;// Will store the parent of current octant
-	Octant* m_pChild[8];//Will store the children of the current octant
+
+	MyOctant* m_pParent = nullptr;// Will store the parent of current octant
+	MyOctant* m_pChild[8];//Will store the children of the current octant
 
 	std::vector<uint> m_EntityList; //List of Entities under this octant (Index in Entity Manager)
 
-	Octant* m_pRoot = nullptr;//Root octant
-	std::vector<Octant*> m_lChild; //list of nodes that contain objects (this will be applied to root only)
-	
+	MyOctant* m_pRoot = nullptr;//Root octant
+	std::vector<MyOctant*> m_lChild; //list of nodes that contain objects (this will be applied to root only)
+
+	bool m_bCanRenderWire = false;
+
 public:
 	/*
-	USAGE: Constructor, will create an octant containing all MagnaEntities Instances in the Mesh 
+	USAGE: Constructor, will create an octant containing all MagnaEntities Instances in the Mesh
 	manager	currently contains
 	ARGUMENTS:
 	- uint a_nMaxLevel = 2 -> Sets the maximum level of subdivision
 	- uint nIdealEntityCount = 5 -> Sets the ideal level of objects per octant
 	OUTPUT: class object
 	*/
-	Octant(uint a_nMaxLevel = 2, uint a_nIdealEntityCount = 5);
+	MyOctant(uint a_nMaxLevel = 2, uint a_nIdealEntityCount = 5);
 	/*
 	USAGE: Constructor
 	ARGUMENTS:
@@ -55,32 +48,32 @@ public:
 	- float a_fSize -> size of each side of the octant volume
 	OUTPUT: class object
 	*/
-	Octant(vector3 a_v3Center, vector3 a_fSize);
+	MyOctant(vector3 a_v3Center, vector3 a_fSize);
 	/*
 	USAGE: Copy Constructor
 	ARGUMENTS: class object to copy
 	OUTPUT: class object instance
 	*/
-	Octant(Octant const& other);
+	MyOctant(MyOctant const& other);
 	/*
 	USAGE: Copy Assignment Operator
 	ARGUMENTS: class object to copy
 	OUTPUT: ---
 	*/
-	Octant& operator=(Octant const& other);
+	MyOctant& operator=(MyOctant const& other);
 	/*
 	USAGE: Destructor
 	ARGUMENTS: ---
 	OUTPUT: ---
 	*/
-	~Octant(void);
+	~MyOctant(void);
 	/*
 	USAGE: Changes object contents for other object's
 	ARGUMENTS:
 	- Octant& other -> object to swap content from
 	OUTPUT: ---
 	*/
-	void Swap(Octant& other);
+	void Swap(MyOctant& other);
 	/*
 	USAGE: Gets this octant's size
 	ARGUMENTS: ---
@@ -152,21 +145,21 @@ public:
 	ARGUMENTS: uint a_nChild -> index of the child (from 0 to 7)
 	OUTPUT: Octant object (child in index)
 	*/
-	Octant* GetChild(uint a_nChild);
+	MyOctant* GetChild(uint a_nChild);
 	/*
 	USAGE: returns the parent of the octant
 	ARGUMENTS: ---
 	OUTPUT: Octant object (parent)
 	*/
-	Octant* GetParent(void);
+	MyOctant* GetParent(void);
 	/*
-	USAGE: Asks the Octant if it does not contain any children (its a leaf)
+	USAGE: Asks the MyOctant if it does not contain any children (its a leaf)
 	ARGUMENTS: ---
 	OUTPUT: It contains no children
 	*/
 	bool IsLeaf(void);
 	/*
-	USAGE: Asks the Octant if it contains more than this many Bounding Objects
+	USAGE: Asks the MyOctant if it contains more than this many Bounding Objects
 	ARGUMENTS:
 	- uint a_nEntities -> Number of Entities to query
 	OUTPUT: It contains at least this many Entities
@@ -180,7 +173,7 @@ public:
 	void KillBranches(void);
 	/*
 	USAGE: Creates a tree using subdivisions, the max number of objects and levels
-	ARGUMENTS: 
+	ARGUMENTS:
 	- uint a_nMaxLevel = 3 -> Sets the maximum level of the tree while constructing it
 	OUTPUT: ---
 	*/
@@ -218,14 +211,6 @@ private:
 	OUTPUT: ---
 	*/
 	void ConstructList(void);
-};//class
+};
 
-} //namespace Simplex
 
-#endif //__OCTANTCLASS_H_
-
-  /*
-  USAGE:
-  ARGUMENTS: ---
-  OUTPUT: ---
-  */

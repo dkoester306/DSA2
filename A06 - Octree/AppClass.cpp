@@ -1,5 +1,7 @@
 #include "AppClass.h"
 using namespace Simplex;
+
+
 void Application::InitVariables(void)
 {
 	//Set the position and target of the camera
@@ -34,6 +36,19 @@ void Application::InitVariables(void)
 }
 void Application::Update(void)
 {
+	// if the root is empty, clean to entity manager and delete to octant again
+	//if (m_oRootOct == nullptr)
+	//{
+		m_pEntityMngr->ClearDimensionSetAll();
+		SafeDelete(m_oRootOct);
+//	}
+
+
+
+
+	if (m_bDisplayOn)
+		m_oRootOct = new MyOctant(m_uOctantLevels, 5);
+	
 	//Update the system so it knows how much time has passed since the last call
 	m_pSystem->Update();
 
@@ -51,11 +66,16 @@ void Application::Update(void)
 }
 void Application::Display(void)
 {
+	
+
 	// Clear the screen
 	ClearScreen();
 
 	//display octree
-	//m_pRoot->Display();
+	if (m_bDisplayOn&&m_uOctantID==-1)
+		m_oRootOct->DisplayLeaves();
+	else if(m_bDisplayOn&&m_uOctantID >=0)
+		m_oRootOct->Display(m_uOctantID);
 	
 	// draw a skybox
 	m_pMeshMngr->AddSkyboxToRenderList();

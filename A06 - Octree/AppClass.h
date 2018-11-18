@@ -6,14 +6,20 @@ Date: 2017/06
 #define __APPLICATIONCLASS_H_
 
 #include "Definitions.h"
+#include "MyOctant.h"
 
 #include "ControllerConfiguration.h"
 #include "imgui\ImGuiObject.h"
 
 #include "MyEntityManager.h"
 
+
+
 namespace Simplex
 {
+
+	//extern bool m_bDisplayOn;	// Toggles display of wireframe on and off.
+	//extern Octant* m_oRootOct;	// pointer to the octant object
 	//Adding Application to the Simplex namespace
 class Application
 {
@@ -21,8 +27,12 @@ class Application
 	uint m_uOctantID = -1; //Index of Octant to display
 	uint m_uObjects = 0; //Number of objects in the scene
 	uint m_uOctantLevels = 0; //Number of levels in the octree
+	bool m_bDisplayOn = true;
+	MyOctant* m_oRootOct = nullptr;
+	
+
 private:
-	String m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu"; //programmer
+	String m_sProgrammer = "Danny Koester - dsk6539@rit.edu"; //programmer
 
 	static ImGuiObject gui; //GUI object
 	bool m_bGUI_Main = true; //show Main GUI window?
@@ -58,6 +68,8 @@ private:
 	sf::SoundBuffer m_soundBuffer; //buffer to play sound from
 	sf::Sound m_sound; //sound effect
 	sf::Music m_soundBGM; //background music
+
+	
 
 public:
 #pragma region Constructor / Run / Destructor

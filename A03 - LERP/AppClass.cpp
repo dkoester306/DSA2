@@ -1,4 +1,5 @@
 #include "AppClass.h"
+#include "Simplex/Physics/Octant.h"
 void Application::InitVariables(void)
 {
 	//Change this to your name and email
@@ -17,6 +18,7 @@ void Application::InitVariables(void)
 	{
 		m_v4ClearColor = vector4(ZERO_V3, 1.0f);
 	}
+
 	
 	//if there are no segments create 7
 	if(m_uOrbits < 1)
@@ -61,6 +63,7 @@ void Application::InitVariables(void)
 }
 void Application::Update(void)
 {
+	
 	//Update the system so it knows how much time has passed since the last call
 	m_pSystem->Update();
 
